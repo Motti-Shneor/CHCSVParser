@@ -63,6 +63,9 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
     NSUInteger _currentRecord;
     BOOL _cancelled;
 }
+- (id)init {
+    return [self initWithDelimitedString:@"" delimiter:COMMA];
+}
 
 - (id)initWithCSVString:(NSString *)csv {
     return [self initWithDelimitedString:csv delimiter:COMMA];
@@ -575,6 +578,9 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
     NSUInteger _currentField;
     NSMutableArray *_firstLineKeys;
 }
+- (instancetype)init {
+    return [self initWithOutputStream:nil encoding:NSUTF8StringEncoding delimiter:COMMA];
+}
 
 - (instancetype)initForWritingToCSVFile:(NSString *)path {
     NSOutputStream *stream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
@@ -646,7 +652,7 @@ NSString *const CHCSVErrorDomain = @"com.davedelong.csv";
     }
     
     if (_currentLine == 0) {
-        [_firstLineKeys addObject:field];
+        [_firstLineKeys addObject:field ? field : [NSString stringWithFormat:@"field %lu", (unsigned long)_firstLineKeys.count]];
     }
     
     NSString *string = field ? [field description] : @"";
